@@ -7,7 +7,7 @@ part 'clouds.g.dart';
 @freezed
 class Clouds with _$Clouds {
   const factory Clouds({
-    required double all,
+    double? all,
   }) = _Clouds;
 
   factory Clouds.fromJson(Map<String, Object?> json) => _$CloudsFromJson(json);

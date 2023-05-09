@@ -15,19 +15,19 @@ part 'weather_listing.g.dart';
 @freezed
 class WeatherListing with _$WeatherListing {
   const factory WeatherListing({
-    required Coord coord,
-    required List<Weather> weather,
-    required String base,
-    required Main main,
-    required int visibility,
-    required Wind wind,
-    required Clouds clouds,
-    required int dt,
-    required Sys sys,
-    required int timezone,
-    required int id,
-    required String name,
-    required int cod,
+    Coord? coord,
+    List<Weather>? weather,
+    String? base,
+    Main? main,
+    int? visibility,
+    Wind? wind,
+    Clouds? clouds,
+    int? dt,
+    Sys? sys,
+    int? timezone,
+    int? id,
+    String? name,
+    int? cod,
   }) = _WeatherListing;
 
   factory WeatherListing.fromJson(Map<String, Object?> json) => _$WeatherListingFromJson(json);

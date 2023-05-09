@@ -7,14 +7,14 @@ part 'main.g.dart';
 @freezed
 class Main with _$Main {
   const factory Main({
-    required double temp,
-    required double feels_like,
-    required double temp_min,
-    required double temp_max,
-    required double pressure,
-    required double humidity,
-    required double sea_level,
-    required double grnd_level,
+     double? temp,
+     double? feels_like,
+     double? temp_min,
+     double? temp_max,
+     double? pressure,
+     double? humidity,
+     double? sea_level,
+     double?grnd_level,
   }) = _Main;
 
   factory Main.fromJson(Map<String, Object?> json) => _$MainFromJson(json);

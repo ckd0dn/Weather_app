@@ -9,6 +9,7 @@ class WeatherListingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<WeatherListingsViewModel>();
     final state = viewModel.state;
+    final isWeather = state.weathers != null;
 
     return Scaffold(
       body: Container(
@@ -23,12 +24,12 @@ class WeatherListingsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                state.weathers!.name,
+              Text(isWeather ?
+                state.weathers!.name! : "",
                 style: TextStyle(fontSize: 24, color: Colors.white),
               ),
-              Text(
-                state.weathers!.weather[0].description,
+              Text(isWeather ?
+                state.weathers!.weather![0].description! : "",
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),
               Image(
@@ -56,7 +57,7 @@ class WeatherListingsScreen extends StatelessWidget {
                                     text: "온도 : ",
                                   ),
                                   TextSpan(
-                                    text: changeTemp(state.weathers!.main.temp),
+                                    text: isWeather ? changeTemp(state.weathers!.main?.temp) : "",
                                   ),
                                   const TextSpan(
                                     text: "도",
@@ -73,7 +74,7 @@ class WeatherListingsScreen extends StatelessWidget {
                                     text: "체감온도 : ",
                                   ),
                                   TextSpan(
-                                    text: changeTemp(state.weathers!.main.feels_like),
+                                    text: isWeather ? changeTemp(state.weathers!.main?.feels_like) : "",
                                   ),
                                   const TextSpan(
                                     text: "도",
@@ -94,7 +95,7 @@ class WeatherListingsScreen extends StatelessWidget {
                                     text: "습도 : ",
                                   ),
                                   TextSpan(
-                                    text: state.weathers!.main.humidity.toInt().toString(),
+                                    text: isWeather ? state.weathers!.main?.humidity?.toInt().toString() : "",
                                   ),
                                   const TextSpan(
                                     text: "%",
@@ -111,7 +112,7 @@ class WeatherListingsScreen extends StatelessWidget {
                                     text: "흐림 : ",
                                   ),
                                   TextSpan(
-                                    text: state.weathers!.clouds.all.toInt().toString(),
+                                    text: isWeather ? state.weathers!.clouds?.all?.toInt().toString() : "",
                                   ),
                                   const TextSpan(
                                     text: "%",
@@ -162,8 +163,11 @@ class WeatherListingsScreen extends StatelessWidget {
     );
   }
 
-  changeTemp( double temp ) {
-    String changedTemp = (temp.toInt() - 273).toString();
-    return changedTemp;
+  changeTemp( double? temp ) {
+    if(temp != null){
+      String changedTemp = (temp.toInt() - 273).toString();
+      return changedTemp;
+    }
+
   }
 }

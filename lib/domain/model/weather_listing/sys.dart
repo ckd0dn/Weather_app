@@ -7,11 +7,11 @@ part 'sys.g.dart';
 @freezed
 class Sys with _$Sys {
   const factory Sys({
-    required double type,
-    required double id,
-    required String country,
-    required double sunrise,
-    required double sunset,
+     double? type,
+     double? id,
+     String? country,
+     double? sunrise,
+     double? sunset,
   }) = _Sys;
 
   factory Sys.fromJson(Map<String, Object?> json) => _$SysFromJson(json);

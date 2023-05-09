@@ -28,7 +28,7 @@ class WeatherRepositoryImpl implements WeatherRepository {
       print(data);
       return Result.success(listing);
     }catch (e) {
-
+      print(e);
       return Result.error(Exception('데이터 로드 실패'));
     }
 

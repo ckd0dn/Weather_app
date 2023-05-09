@@ -7,8 +7,8 @@ part 'coord.g.dart';
 @freezed
 class Coord with _$Coord {
   const factory Coord({
-    required double lon,
-    required double lat,
+    double? lon,
+    double? lat,
   }) = _Coord;
 
   factory Coord.fromJson(Map<String, Object?> json) => _$CoordFromJson(json);

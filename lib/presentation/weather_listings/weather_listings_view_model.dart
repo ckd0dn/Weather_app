@@ -30,6 +30,7 @@ class WeatherListingsViewModel with ChangeNotifier {
       },
       error: (e) {
         print("날씨 조회 에러");
+        print(e);
       },
     );
 
