@@ -39,4 +39,33 @@ class WeatherListingsViewModel with ChangeNotifier {
     );
     notifyListeners();
   }
+
+  //날씨에 따라 GIF 가져오기
+  String weatherGIF(String weatherState) {
+    switch (weatherState) {
+      case 'Clear':
+        return 'assets/images/sunny.gif';
+      case 'Clouds':
+        return 'assets/images/cloudy.gif';
+      case 'Rain':
+        return 'assets/images/rain.gif';
+      case 'Fog':
+        return 'assets/images/fog.gif';
+      default:
+        return '';
+    }
+  }
+
+  //널처리
+  isWeatherCheck(bool isWeather, String text) {
+    return isWeather ? text : "";
+  }
+
+  //화씨 섭씨 변환
+  changeTemp(double? temp) {
+    if (temp != null) {
+      String changedTemp = (temp.toInt() - 273).toString();
+      return changedTemp;
+    }
+  }
 }

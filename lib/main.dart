@@ -27,6 +27,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: WeatherListingsScreen());
+        home: const WeatherListingsScreen(),
+        theme: ThemeData(fontFamily: 'Maplestory'),
+        themeMode: ThemeMode.system,
+    );
   }
 }

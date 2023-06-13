@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weather_app/domain/model/weather_listing/main.dart';
+import 'package:weather_app/presentation/weather_listings/weather_listings_state.dart';
 import 'package:weather_app/presentation/weather_listings/weather_listings_view_model.dart';
 
 class WeatherListingsScreen extends StatelessWidget {
@@ -18,141 +20,68 @@ class WeatherListingsScreen extends StatelessWidget {
             image: DecorationImage(
                 image: AssetImage('assets/images/afternoon.jpg'),
                 fit: BoxFit.cover)),
-        child: Container(
+        child: SizedBox(
           width: 250,
-          height: 400,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(isWeather ?
-                state.weathers!.name! : "",
+              Text(
+                isWeather ? state.weathers!.name! : "",
                 style: TextStyle(fontSize: 24, color: Colors.white),
               ),
-              Text(isWeather ?
-                state.weathers!.weather![0].description! : "",
-                style: TextStyle(fontSize: 20, color: Colors.white),
+              Text(
+                isWeather
+                    ? "${" " + viewModel.changeTemp(state.weathers!.main?.temp)}°"
+                    : "",
+                style: TextStyle(fontSize: 44, color: Colors.white),
               ),
               Image(
                   width: 150,
                   height: 150,
-                  image: AssetImage('assets/images/sunny.png')),
+                  image: AssetImage(isWeather
+                      ? viewModel.weatherGIF(state.weathers!.weather![0].main!)
+                      : "assets/images/question.gif")),
+              Text(
+                isWeather ? state.weathers!.weather![0].description! : "",
+                style: const TextStyle(fontSize: 20, color: Colors.white),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    isWeather
+                        ? "${"최고:" + viewModel.changeTemp(state.weathers!.main?.temp_max)}°"
+                        : "최고:",
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                  Padding(padding: EdgeInsets.only(right: 10)),
+                  Text(
+                    isWeather
+                        ? "${"최저:" + viewModel.changeTemp(state.weathers!.main?.temp_min)}°"
+                        : "최저:",
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                ],
+              ),
               Container(
+                margin: EdgeInsets.only(top: 20),
                 padding: EdgeInsets.all(12),
                 decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12)
-                ),
+                    borderRadius: BorderRadius.circular(12)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                                style: const TextStyle(fontSize: 18, color: Colors.white),
-                                children: [
-                                  const TextSpan(
-                                    text: "온도 : ",
-                                  ),
-                                  TextSpan(
-                                    text: isWeather ? changeTemp(state.weathers!.main?.temp) : "",
-                                  ),
-                                  const TextSpan(
-                                    text: "도",
-                                  ),
-                                ]
-                            ),),
-                        ),
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                                style: const TextStyle(fontSize: 18, color: Colors.white),
-                                children: [
-                                  const TextSpan(
-                                    text: "체감온도 : ",
-                                  ),
-                                  TextSpan(
-                                    text: isWeather ? changeTemp(state.weathers!.main?.feels_like) : "",
-                                  ),
-                                  const TextSpan(
-                                    text: "도",
-                                  ),
-                                ]
-                            ),),
-                        ),
-                      ],
+                    Text(
+                      "지금",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                                style: const TextStyle(fontSize: 18, color: Colors.white),
-                                children: [
-                                  const TextSpan(
-                                    text: "습도 : ",
-                                  ),
-                                  TextSpan(
-                                    text: isWeather ? state.weathers!.main?.humidity?.toInt().toString() : "",
-                                  ),
-                                  const TextSpan(
-                                    text: "%",
-                                  ),
-                                ]
-                            ),),
-                        ),
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                                style: const TextStyle(fontSize: 18, color: Colors.white),
-                                children: [
-                                  const TextSpan(
-                                    text: "흐림 : ",
-                                  ),
-                                  TextSpan(
-                                    text: isWeather ? state.weathers!.clouds?.all?.toInt().toString() : "",
-                                  ),
-                                  const TextSpan(
-                                    text: "%",
-                                  ),
-                                ]
-                            ),),
-                        ),
-                      ],
+                    Icon(Icons.sunny, size: 24, color: Colors.white,),
+                    Text(
+                      "19°",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
-                    RichText(
-                      text: TextSpan(
-                          style: const TextStyle(fontSize: 18, color: Colors.white),
-                          children: [
-                            const TextSpan(
-                              text: "1시간 비의양 : ",
-                            ),
-                            // TextSpan(
-                            //   text: state.weathers.r,
-                            // ),
-                            const TextSpan(
-                              text: "mm",
-                            ),
-                          ]
-                      ),),
-                    RichText(
-                      text: TextSpan(
-                          style: const TextStyle(fontSize: 18, color: Colors.white),
-                          children: [
-                            const TextSpan(
-                              text: "1시간 적설량 : ",
-                            ),
-                            // TextSpan(
-                            //   text: state.weathers.r,
-                            // ),
-                            const TextSpan(
-                              text: "mm",
-                            ),
-                          ]
-                      ),),
-
                   ],
                 ),
               ),
@@ -161,13 +90,5 @@ class WeatherListingsScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  changeTemp( double? temp ) {
-    if(temp != null){
-      String changedTemp = (temp.toInt() - 273).toString();
-      return changedTemp;
-    }
-
   }
 }
