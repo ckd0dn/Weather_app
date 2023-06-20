@@ -10,6 +10,7 @@ part 'weather_listings_state.g.dart';
 class WeatherListingsState with _$WeatherListingsState {
   const factory WeatherListingsState({
     WeatherListing? weathers,
+    @Default([]) List<WeatherListing> weathersList,
     @Default(false) bool isLoading,
   }) = _WeatherListingsState;
 

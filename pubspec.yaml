@@ -45,6 +45,7 @@ dependencies:
   fluttertoast: ^8.2.2
   permission_handler: ^10.3.0
   app_settings: ^4.2.0
+  font_awesome_flutter: ^10.4.0
 
 dev_dependencies:
   flutter_test:

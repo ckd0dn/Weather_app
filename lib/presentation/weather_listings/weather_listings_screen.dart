@@ -4,6 +4,8 @@ import 'package:weather_app/domain/model/weather_listing/main.dart';
 import 'package:weather_app/presentation/weather_listings/weather_listings_state.dart';
 import 'package:weather_app/presentation/weather_listings/weather_listings_view_model.dart';
 
+import '../../util/utils.dart';
+
 class WeatherListingsScreen extends StatelessWidget {
   const WeatherListingsScreen({Key? key}) : super(key: key);
 
@@ -13,82 +15,108 @@ class WeatherListingsScreen extends StatelessWidget {
     final state = viewModel.state;
     final isWeather = state.weathers != null;
 
-    return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('assets/images/afternoon.jpg'),
-                fit: BoxFit.cover)),
-        child: SizedBox(
-          width: 250,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                isWeather ? state.weathers!.name! : "",
-                style: TextStyle(fontSize: 24, color: Colors.white),
-              ),
-              Text(
-                isWeather
-                    ? "${" " + viewModel.changeTemp(state.weathers!.main?.temp)}°"
-                    : "",
-                style: TextStyle(fontSize: 44, color: Colors.white),
-              ),
-              Image(
-                  width: 150,
-                  height: 150,
-                  image: AssetImage(isWeather
-                      ? viewModel.weatherGIF(state.weathers!.weather![0].main!)
-                      : "assets/images/question.gif")),
-              Text(
-                isWeather ? state.weathers!.weather![0].description! : "",
-                style: const TextStyle(fontSize: 20, color: Colors.white),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    isWeather
-                        ? "${"최고:" + viewModel.changeTemp(state.weathers!.main?.temp_max)}°"
-                        : "최고:",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                  ),
-                  Padding(padding: EdgeInsets.only(right: 10)),
-                  Text(
-                    isWeather
-                        ? "${"최저:" + viewModel.changeTemp(state.weathers!.main?.temp_min)}°"
-                        : "최저:",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                  ),
-                ],
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 20),
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/images/night.jpg'),
+                  fit: BoxFit.cover)),
+          child: SizedBox(
+            width: 350,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  isWeather ? state.weathers!.name! : "",
+                  style: TextStyle(fontSize: 24, color: Colors.white),
+                ),
+                Text(
+                  isWeather
+                      ? "${" " + Utils().changeTemp(state.weathers!.main?.temp)}°"
+                      : "",
+                  style: TextStyle(fontSize: 44, color: Colors.white),
+                ),
+                Image(
+                    width: 150,
+                    height: 150,
+                    image: AssetImage(isWeather
+                        ? Utils().weatherGIF(state.weathers!.weather![0].main!)
+                        : "assets/images/question.gif")),
+                Text(
+                  isWeather ? state.weathers!.weather![0].description! : "",
+                  style: const TextStyle(fontSize: 20, color: Colors.white),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "지금",
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                      isWeather
+                          ? "${"최고:" + Utils().changeTemp(state.weathers!.main?.temp_max)}°"
+                          : "최고:",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
-                    Icon(Icons.sunny, size: 24, color: Colors.white,),
+                    Padding(padding: EdgeInsets.only(right: 10)),
                     Text(
-                      "19°",
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                      isWeather
+                          ? "${"최저:" + Utils().changeTemp(state.weathers!.main?.temp_min)}°"
+                          : "최저:",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
                   ],
                 ),
-              ),
-            ],
+                hoursWidget(viewModel, state),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget hoursWidget(
+      WeatherListingsViewModel viewModel, WeatherListingsState state) {
+    return Container(
+      height: 130,
+      margin: EdgeInsets.only(top: 20),
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(12)),
+      child: ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: state.weathersList.length,
+          itemBuilder: (BuildContext ctx, int idx) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Text(
+                      Utils().changeDt(state.weathersList[idx].dt_txt!),
+                      style: TextStyle(fontSize: 13, color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Utils().weatherIcon(state.weathers!.weather![0].main!)
+                  ),
+                  Text(
+                    Utils().changeTemp(state.weathersList[idx].main!.temp) +
+                        "°",
+                    style: TextStyle(fontSize: 13, color: Colors.white),
+                  ),
+                ],
+              ),
+            );
+          }),
     );
   }
 }

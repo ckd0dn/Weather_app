@@ -28,6 +28,7 @@ class WeatherListing with _$WeatherListing {
     int? id,
     String? name,
     int? cod,
+    String? dt_txt
   }) = _WeatherListing;
 
   factory WeatherListing.fromJson(Map<String, Object?> json) => _$WeatherListingFromJson(json);

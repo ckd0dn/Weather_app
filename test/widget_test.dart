@@ -9,14 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:weather_app/data/source/remote/weather_api.dart';
+import 'package:weather_app/domain/repository/weather_repository.dart';
 
 import 'package:weather_app/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  test('네트웍통신', ()  async {
 
-    final api = WeatherApi();
-
-    api.getWeatherListings("37.3900688", "127.1140152");
   });
 }

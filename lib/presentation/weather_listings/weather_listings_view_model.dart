@@ -11,7 +11,12 @@ class WeatherListingsViewModel with ChangeNotifier {
   WeatherListingsState get state => _state;
 
   WeatherListingsViewModel(this._weatherRepository) {
-    _getWeatherListings();
+    init();
+  }
+
+  Future<void> init() async {
+    await _getWeatherListings();
+    _getWeatherHoursListings();
   }
 
   Future _getWeatherListings() async {
@@ -40,32 +45,33 @@ class WeatherListingsViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  //날씨에 따라 GIF 가져오기
-  String weatherGIF(String weatherState) {
-    switch (weatherState) {
-      case 'Clear':
-        return 'assets/images/sunny.gif';
-      case 'Clouds':
-        return 'assets/images/cloudy.gif';
-      case 'Rain':
-        return 'assets/images/rain.gif';
-      case 'Fog':
-        return 'assets/images/fog.gif';
-      default:
-        return '';
-    }
+  Future _getWeatherHoursListings() async {
+    _state = state.copyWith(
+      isLoading: true,
+    );
+    notifyListeners();
+
+    final result = await _weatherRepository.getWeatherHoursListing();
+
+    result.when(
+      success: (listings) {
+        print(listings.length);
+
+        _state = state.copyWith(
+          weathersList: listings,
+        );
+      },
+      error: (e) {
+        print("날씨 조회 에러");
+        print(e);
+      },
+    );
+
+    _state = state.copyWith(
+      isLoading: false,
+    );
+    notifyListeners();
   }
 
-  //널처리
-  isWeatherCheck(bool isWeather, String text) {
-    return isWeather ? text : "";
-  }
 
-  //화씨 섭씨 변환
-  changeTemp(double? temp) {
-    if (temp != null) {
-      String changedTemp = (temp.toInt() - 273).toString();
-      return changedTemp;
-    }
-  }
 }

@@ -10,7 +10,7 @@ class WeatherApi {
 
   WeatherApi({http.Client? client}) : _client = (client ?? http.Client());
 
-  Future<http.Response> getWeatherListings(String lat, String lon) async {
+  Future<http.Response> getCurrentWeatherListings(String lat, String lon) async {
 
     Uri uri = Uri.parse('${baseUrl}lat=$lat&lon=$lon&appid=$apiKey&lang=kr');
 
@@ -21,9 +21,22 @@ class WeatherApi {
     } else {
       throw Exception('Failed to fetch weather data');
     }
-
-
     
   }
+
+  Future<http.Response> getWeatherHoursListings(String lat, String lon) async {
+
+    Uri uri = Uri.parse('https://api.openweathermap.org/data/2.5/forecast?lat=$lat&lon=$lon&appid=$apiKey');
+
+    final response = await _client.get(uri);
+
+    if (response.statusCode == 200) {
+      return response;
+    } else {
+      throw Exception('Failed to fetch weather data');
+    }
+
+  }
+
 
 }
