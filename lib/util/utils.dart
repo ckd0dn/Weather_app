@@ -62,4 +62,24 @@ class Utils {
     return "$subDay\n$subDt";
   }
 
+  //밤낮에따른 배경화면
+  String timeSetBackground() {
+    var currentTime =  DateTime.now().hour;
+    print(currentTime);
+
+    String backGroundImage = '';
+
+    currentTime = 12;
+
+    if(currentTime > 7 && currentTime < 20) {
+       //낮
+      backGroundImage = 'assets/images/clearSky.png';
+       return backGroundImage;
+    }else{
+      //밤
+      backGroundImage = 'assets/images/night.jpg';
+      return backGroundImage;
+    }
+  }
+
 }

@@ -21,7 +21,7 @@ class WeatherListingsScreen extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage('assets/images/night.jpg'),
+                  image: AssetImage(Utils().timeSetBackground()),
                   fit: BoxFit.cover)),
           child: SizedBox(
             width: 350,
