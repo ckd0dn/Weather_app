@@ -113,12 +113,9 @@ class _WeatherMapScreenState extends State<WeatherMapScreen> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: SafeArea(
-        bottom: false,
-        child: Center(
-          child: _mapUrl != '' ?  WebViewWidget(controller: _controller) : const CircularProgressIndicator(),
-        )
-      ),
+      body: Center(
+        child: _mapUrl != '' ?  WebViewWidget(controller: _controller) : const CircularProgressIndicator(),
+      )
     );
   }
 }

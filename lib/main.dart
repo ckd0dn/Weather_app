@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: const HomeScreen(),
-        theme: ThemeData(fontFamily: 'Maplestory'),
+        theme: ThemeData(fontFamily: 'Maplestory', useMaterial3: true, primaryColor: Colors.white),
         themeMode: ThemeMode.system,
     );
   }

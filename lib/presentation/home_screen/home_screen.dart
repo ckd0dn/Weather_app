@@ -1,4 +1,5 @@
-import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
+import 'package:floating_navbar/floating_navbar.dart';
+import 'package:floating_navbar/floating_navbar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_app/presentation/weather_listings/weather_listings_screen.dart';
 import 'package:weather_app/presentation/wheather_map/weather_map_screen.dart';
@@ -17,18 +18,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      backgroundColor: Colors.black,
-      body: _pages[_index],
-      bottomNavigationBar: FloatingNavbar(
-
-        onTap: (int val) => setState(() => _index = val),
-        currentIndex: _index,
-        items: [
-          FloatingNavbarItem(icon: Icons.sunny, title: 'Weather'),
-          FloatingNavbarItem(icon: Icons.map, title: 'Weather Map'),
-        ],
+    return SafeArea(
+      child: Scaffold(
+        extendBody: true,
+        backgroundColor: Colors.black,
+        body: _pages[_index],
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.sunny,),
+              label: 'weather',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.map,),
+              label: 'map',
+            ),
+          ],
+          currentIndex: _index, // 지정 인덱스로 이동
+          selectedItemColor: Colors.greenAccent,
+          onTap: (index) {
+            setState(() {
+              _index = index;
+            });
+          }, // 선언했던 onItemTapped
+        ),
       ),
     );
   }

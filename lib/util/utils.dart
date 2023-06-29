@@ -1,11 +1,17 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
+
+import '../domain/model/weather_listing/weather_listing.dart';
 
 class Utils {
 
   //날씨에 따라 GIF 가져오기
   String weatherGIF(String weatherState) {
+    print(weatherState);
     switch (weatherState) {
       case 'Clear':
         return 'assets/images/sunny.gif';
@@ -15,8 +21,10 @@ class Utils {
         return 'assets/images/rain.gif';
       case 'Fog':
         return 'assets/images/fog.gif';
+      case 'Mist':
+        return 'assets/images/fog.gif';
       default:
-        return '';
+        return 'assets/images/question.gif';
     }
   }
 
@@ -31,6 +39,8 @@ class Utils {
         return const FaIcon(FontAwesomeIcons.cloudRain, color: Colors.white,);
       case 'Fog':
         return const FaIcon(FontAwesomeIcons.smog, color: Colors.white,);
+      case 'Mist':
+        return const FaIcon(FontAwesomeIcons.smog, color: Colors.white,);
       default:
         return const FaIcon(FontAwesomeIcons.question, color: Colors.white,);
     }
@@ -42,10 +52,21 @@ class Utils {
   }
 
   //화씨 섭씨 변환
-  changeTemp(double? temp) {
+  String changeTemp(double? temp) {
     if (temp != null) {
       String changedTemp = (temp.toInt() - 273).toString();
       return changedTemp;
+    }else{
+      return '';
+    }
+  }
+
+  int changeTempInt(double? temp) {
+    if (temp != null) {
+      int changedTemp = temp.toInt() - 273;
+      return changedTemp;
+    }else{
+      return 0;
     }
   }
 
@@ -80,6 +101,45 @@ class Utils {
       backGroundImage = 'assets/images/night.jpg';
       return backGroundImage;
     }
+  }
+
+  //요일 포맷
+  String dateFormat(String time) {
+    DateTime dt = DateTime.parse(time);
+   String result = DateFormat('EEEE').format(dt);
+   switch(result) {
+     case "Monday":
+       result = "월";
+       break;
+     case "Tuesday":
+       result = "화";
+       break;
+     case "Wednesday":
+       result = "수";
+       break;
+     case "Thursday":
+       result = "목";
+       break;
+     case "Friday":
+       result = "금";
+       break;
+     case "Saturday":
+       result = "토";
+       break;
+     case "Sunday":
+       result = "일";
+       break;
+   }
+   return result;
+  }
+
+  //일간요악
+  String dailySummary(List<WeatherListing> selectedDayList) {
+   late String tempMax = selectedDayList.map((e) => changeTempInt(e.main!.temp!)).fold<int>(0, max).ceil().toString();
+   late String tempMin = selectedDayList.map((e) => changeTempInt(e.main!.temp!)).reduce(min).toInt().toString();
+   String day = dateFormat(selectedDayList[0].dt_txt!);
+   String result = '$day요일 최고 기온은 $tempMax도 최저기온은 $tempMin도로 예상됩니다';
+   return result;
   }
 
 }
