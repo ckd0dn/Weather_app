@@ -10,7 +10,7 @@ import 'package:weather_app/domain/model/weather_listing/weather_listing.dart';
 import '../../util/utils.dart';
 import '../weather_listings/weather_listings_view_model.dart';
 
-enum SampleItem { itemOne, itemTwo, itemThree }
+enum SampleItem { temp, humidity  }
 
 class WeatherChartScreen extends StatefulWidget {
   const WeatherChartScreen({Key? key}) : super(key: key);
@@ -22,7 +22,8 @@ class WeatherChartScreen extends StatefulWidget {
 class _WeatherChartScreenState extends State<WeatherChartScreen> {
   int _selectedIndex = 0;
 
-  SampleItem? selectedMenu;
+  SampleItem selectedMenu = SampleItem.temp;
+  Widget _filterIcon = const FaIcon(FontAwesomeIcons.temperatureHalf);
 
   String subStringDt(String dt) {
     String timeString = "${dt.substring(8, 10)}일${dt.substring(11, 13)}시";
@@ -95,14 +96,39 @@ class _WeatherChartScreenState extends State<WeatherChartScreen> {
         break;
     }
 
-    for (var e in _selectedDayList) {
-      chartData.add(
-        _SplineAreaData(
-          subStringDt(e.dt_txt!),
-          Utils().changeTempInt(e.main!.temp!),
-        ),
-      );
+    switch (selectedMenu){
+      case SampleItem.temp:
+        for (var e in _selectedDayList) {
+          chartData.add(
+            _SplineAreaData(
+              subStringDt(e.dt_txt!),
+              Utils().changeTempInt(e.main!.temp!),
+            ),
+          );
+        }
+        break;
+      case SampleItem.humidity:
+        for (var e in _selectedDayList) {
+          chartData.add(
+            _SplineAreaData(
+              subStringDt(e.dt_txt!),
+              e.main!.humidity!.toInt(),
+            ),
+          );
+        }
+        break;
+      default:
+        break;
     }
+
+    // for (var e in _selectedDayList) {
+    //   chartData.add(
+    //     _SplineAreaData(
+    //       subStringDt(e.dt_txt!),
+    //       Utils().changeTempInt(e.main!.temp!),
+    //     ),
+    //   );
+    // }
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -153,21 +179,27 @@ class _WeatherChartScreenState extends State<WeatherChartScreen> {
                       tooltip: "필터",
                       shadowColor: Colors.grey,
                       color: Colors.white,
-                      icon: const FaIcon(FontAwesomeIcons.temperatureHalf),
+                      icon: _filterIcon,
                       initialValue: selectedMenu,
                       // Callback that sets the selected popup menu item.
                       onSelected: (SampleItem item) {
                         setState(() {
                           selectedMenu = item;
+                          if(selectedMenu == SampleItem.temp){
+                            _filterIcon = const FaIcon(FontAwesomeIcons.temperatureHalf);
+                          }
+                          if(selectedMenu == SampleItem.humidity){
+                            _filterIcon = const FaIcon(FontAwesomeIcons.droplet);
+                          }
                         });
                       },
                       itemBuilder: (BuildContext context) => <PopupMenuEntry<SampleItem>>[
                         const PopupMenuItem<SampleItem>(
-                          value: SampleItem.itemOne,
+                          value: SampleItem.temp,
                           child: Text('기온'),
                         ),
                         const PopupMenuItem<SampleItem>(
-                          value: SampleItem.itemTwo,
+                          value: SampleItem.humidity,
                           child: Text('습도'),
                         ),
                       ],
@@ -179,12 +211,11 @@ class _WeatherChartScreenState extends State<WeatherChartScreen> {
             SizedBox(
                 height: MediaQuery.of(context).size.height / 2,
                 width: double.infinity,
-                child: _buildSplineAreaChart(chartData)),
-
+                child: _buildSplineAreaChart(chartData, selectedMenu)),
             Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.only(left:20 ,top: 16),
-              child: const Text("일간요악", style: TextStyle(fontSize: 24, color: Colors.white),),
+              child: const Text("일간요약", style: TextStyle(fontSize: 24, color: Colors.white),),
             ),
             Container(
               decoration:  BoxDecoration(
@@ -194,7 +225,7 @@ class _WeatherChartScreenState extends State<WeatherChartScreen> {
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.only(left:20 ,top: 16, right: 20),
               padding: const EdgeInsets.all(10),
-              child: Text(Utils().dailySummary(_selectedDayList), style: const TextStyle(fontSize: 14, color: Colors.white),),
+              child: Text(Utils().dailySummary(_selectedDayList, selectedMenu), style: const TextStyle(fontSize: 14, color: Colors.white),),
             ),
           ],
         ),
@@ -203,10 +234,10 @@ class _WeatherChartScreenState extends State<WeatherChartScreen> {
   }
 
   /// 스플라인 영역 차트를 반환합니다.
-  SfCartesianChart _buildSplineAreaChart(List<_SplineAreaData> chartData) {
+  SfCartesianChart _buildSplineAreaChart(List<_SplineAreaData> chartData, SampleItem selectedMenu) {
     return SfCartesianChart(
       title: ChartTitle(
-          text: '기온', textStyle: const TextStyle(color: Colors.white)),
+          text: Utils().titleText(selectedMenu), textStyle: const TextStyle(color: Colors.white)),
       plotAreaBorderWidth: 0,
       primaryXAxis: CategoryAxis(
         labelStyle: const TextStyle(color: Colors.white),
@@ -214,11 +245,11 @@ class _WeatherChartScreenState extends State<WeatherChartScreen> {
       ),
       primaryYAxis: NumericAxis(
           labelStyle: const TextStyle(color: Colors.white),
-          labelFormat: '{value}°',
+          labelFormat: '{value}${Utils().labelText(selectedMenu)}',
           axisLine: const AxisLine(width: 0),
           majorGridLines: const MajorGridLines(width: 0),
           majorTickLines: const MajorTickLines(size: 0)),
-      series: _getSplineAreaSeries(chartData),
+      series: _getSplineAreaSeries(chartData, selectedMenu),
       tooltipBehavior: TooltipBehavior(enable: true),
     );
   }
@@ -226,26 +257,18 @@ class _WeatherChartScreenState extends State<WeatherChartScreen> {
   /// 차트 시리즈 목록을 반환합니다
   /// 스플라인 영역 차트에 렌더링해야 합니다.
   List<ChartSeries<_SplineAreaData, String>> _getSplineAreaSeries(
-      List<_SplineAreaData> chartData) {
+      List<_SplineAreaData> chartData, SampleItem selectedMenu) {
     return <ChartSeries<_SplineAreaData, String>>[
       SplineAreaSeries<_SplineAreaData, String>(
         opacity: 0.5,
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: <Color>[
-            Color.fromRGBO(243, 93, 11, 0.9294117647058824),
-            Color.fromRGBO(239, 239, 33, 0.6),
-            Color.fromRGBO(24, 255, 255, 0.6),
-          ],
-        ),
-        name: "기온",
+        gradient: Utils().weatherGraphGradient(selectedMenu),
+        name:  Utils().titleText(selectedMenu),
         dataSource: chartData,
         color: const Color.fromRGBO(239, 239, 33, 0.6),
         borderColor: const Color.fromRGBO(255, 255, 0, 0.6),
         borderWidth: 4,
         xValueMapper: (_SplineAreaData sales, _) => sales.year,
-        yValueMapper: (_SplineAreaData sales, _) => sales.temp.toInt(),
+        yValueMapper: (_SplineAreaData sales, _) => sales.data.toInt(),
       ),
     ];
   }
@@ -253,8 +276,8 @@ class _WeatherChartScreenState extends State<WeatherChartScreen> {
 
 /// Private class for storing the spline area chart datapoints.
 class _SplineAreaData {
-  _SplineAreaData(this.year, this.temp);
+  _SplineAreaData(this.year, this.data);
 
   final String year;
-  final int temp;
+  final int data;
 }

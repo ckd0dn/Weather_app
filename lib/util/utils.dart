@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:weather_app/presentation/wheather_chart/weather_chart_screen.dart';
 
 import '../domain/model/weather_listing/weather_listing.dart';
 
@@ -134,12 +135,82 @@ class Utils {
   }
 
   //일간요악
-  String dailySummary(List<WeatherListing> selectedDayList) {
-   late String tempMax = selectedDayList.map((e) => changeTempInt(e.main!.temp!)).fold<int>(0, max).ceil().toString();
-   late String tempMin = selectedDayList.map((e) => changeTempInt(e.main!.temp!)).reduce(min).toInt().toString();
-   String day = dateFormat(selectedDayList[0].dt_txt!);
-   String result = '$day요일 최고 기온은 $tempMax도 최저기온은 $tempMin도로 예상됩니다';
+  String dailySummary(List<WeatherListing> selectedDayList ,SampleItem selectedMenu) {
+    late String tempMax = selectedDayList.map((e) => changeTempInt(e.main!.temp!)).fold<int>(0, max).ceil().toString();
+    late String tempMin = selectedDayList.map((e) => changeTempInt(e.main!.temp!)).reduce(min).toInt().toString();
+
+    late String humidityMax = selectedDayList.map((e) => e.main!.humidity!.toInt()).fold<int>(0, max).ceil().toString();
+    late String humidityMin = selectedDayList.map((e) => e.main!.humidity!.toInt()).reduce(min).toString();
+
+    String day = dateFormat(selectedDayList[0].dt_txt!);
+    String result = '';
+
+    if(selectedMenu == SampleItem.temp){
+      result = '$day요일 최고 기온은 $tempMax도, 최저기온은 $tempMin도로 예상됩니다';
+    }
+    if(selectedMenu == SampleItem.humidity){
+      result = '$day요일 최고 습도는 $humidityMax%, 최저습도는 $humidityMin%로 예상됩니다';
+    }
+
    return result;
+  }
+
+  //필터에 따른 그래프 라벨
+  labelText(SampleItem selectedMenu) {
+    String label = '';
+    switch (selectedMenu) {
+      case SampleItem.temp:
+        label = '°';
+        break;
+      case SampleItem.humidity:
+        label = '%';
+        break;
+    }
+    return label;
+  }
+
+  //필터에 따른 그래프 제목
+  titleText(SampleItem selectedMenu) {
+    String title = '';
+    switch (selectedMenu) {
+      case SampleItem.temp:
+        title = '기온';
+        break;
+      case SampleItem.humidity:
+        title = '습도';
+        break;
+    }
+    return title;
+  }
+
+  LinearGradient weatherGraphGradient(SampleItem selectedMenu) {
+    late LinearGradient lg;
+
+    switch (selectedMenu) {
+      case SampleItem.temp:
+        lg = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: <Color>[
+            Color.fromRGBO(243, 93, 11, 0.9294117647058824),
+            Color.fromRGBO(239, 239, 33, 0.6),
+            Color.fromRGBO(24, 255, 255, 0.6),
+          ],
+        );
+        break;
+      case SampleItem.humidity:
+        lg = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: <Color>[
+            Color.fromRGBO(2, 75, 246, 0.8941176470588236),
+            Color.fromRGBO(135, 246, 246, 0.9882352941176471),
+
+          ],
+        );
+        break;
+    }
+    return lg;
   }
 
 }
