@@ -52,6 +52,7 @@ dependencies:
   timer_builder: ^2.0.0
   intl: ^0.18.1
   page_transition: ^2.0.9
+  scroll_bottom_navigation_bar: ^4.0.0
 
 dev_dependencies:
   flutter_test:

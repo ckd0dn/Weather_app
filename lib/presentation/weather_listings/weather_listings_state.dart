@@ -8,6 +8,7 @@ part 'weather_listings_state.g.dart';
 
 @freezed
 class WeatherListingsState with _$WeatherListingsState {
+
   const factory WeatherListingsState({
     WeatherListing? weathers,
     @Default([]) List<WeatherListing> weathersList,
@@ -15,4 +16,5 @@ class WeatherListingsState with _$WeatherListingsState {
   }) = _WeatherListingsState;
 
   factory WeatherListingsState.fromJson(Map<String, Object?> json) => _$WeatherListingsStateFromJson(json);
+
 }

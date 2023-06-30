@@ -12,7 +12,7 @@ class Utils {
 
   //날씨에 따라 GIF 가져오기
   String weatherGIF(String weatherState) {
-    print(weatherState);
+
     switch (weatherState) {
       case 'Clear':
         return 'assets/images/sunny.gif';
@@ -20,6 +20,8 @@ class Utils {
         return 'assets/images/cloudy.gif';
       case 'Rain':
         return 'assets/images/rain.gif';
+      case 'Drizzle':
+        return 'assets/images/fog.gif';
       case 'Fog':
         return 'assets/images/fog.gif';
       case 'Mist':
@@ -38,6 +40,8 @@ class Utils {
         return const FaIcon(FontAwesomeIcons.cloud, color: Colors.white,);
       case 'Rain':
         return const FaIcon(FontAwesomeIcons.cloudRain, color: Colors.white,);
+      case 'Drizzle':
+        return const FaIcon(FontAwesomeIcons.cloudRain, color: Colors.white,);
       case 'Fog':
         return const FaIcon(FontAwesomeIcons.smog, color: Colors.white,);
       case 'Mist':
@@ -55,7 +59,8 @@ class Utils {
   //화씨 섭씨 변환
   String changeTemp(double? temp) {
     if (temp != null) {
-      String changedTemp = (temp.toInt() - 273).toString();
+      String changedTemp = '';
+      changedTemp = (temp.toInt() - 273).toString();
       return changedTemp;
     }else{
       return '';
@@ -87,11 +92,8 @@ class Utils {
   //밤낮에따른 배경화면
   String timeSetBackground() {
     var currentTime =  DateTime.now().hour;
-    print(currentTime);
 
     String backGroundImage = '';
-
-    currentTime = 12;
 
     if(currentTime > 7 && currentTime < 20) {
        //낮
@@ -211,6 +213,10 @@ class Utils {
         break;
     }
     return lg;
+  }
+
+  String nullCheckText( bool isNotNull, String text) {
+    return isNotNull ? text : "?";
   }
 
 }
